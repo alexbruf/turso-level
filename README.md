@@ -12,17 +12,23 @@ Use any library from the [`level`](https://github.com/Level/community) ecosystem
 
 ## Install
 
+**Node.js:**
 ```sh
 npm install @alexbruf/turso-level @libsql/client
 ```
 
+**Edge runtimes** (Cloudflare Workers, Vercel Edge, Netlify Edge):
+```sh
+npm install @alexbruf/turso-level @tursodatabase/serverless
+```
+
 ## Usage
 
-### Remote database (edge / serverless)
+### Node.js
 
 ```typescript
 import { TursoLevel } from '@alexbruf/turso-level'
-import { createClient } from '@libsql/client/web'  // use /web for edge runtimes
+import { createClient } from '@libsql/client'
 
 const client = createClient({
   url: process.env.TURSO_DATABASE_URL,
@@ -37,6 +43,20 @@ const value = await db.get('hello') // 'world'
 for await (const [key, value] of db.iterator({ gte: 'a', lte: 'z' })) {
   console.log(key, value)
 }
+```
+
+### Edge runtimes (Cloudflare Workers, Vercel Edge, etc.)
+
+```typescript
+import { TursoLevel } from '@alexbruf/turso-level'
+import { createClient } from '@tursodatabase/serverless/compat'
+
+const client = createClient({
+  url: process.env.TURSO_DATABASE_URL,
+  authToken: process.env.TURSO_AUTH_TOKEN,
+})
+
+const db = new TursoLevel({ client })
 ```
 
 ### Local development (SQLite file)
@@ -70,9 +90,9 @@ const db = new TursoLevel({ client })
 ### With TinaCMS
 
 ```typescript
-// tina/database.ts
+// tina/database.ts — Node.js / serverless (Vercel, Netlify, etc.)
 import { TursoLevel } from '@alexbruf/turso-level'
-import { createClient } from '@libsql/client/web'
+import { createClient } from '@libsql/client'
 import { createDatabase } from '@tinacms/datalayer'
 import { GitHubProvider } from 'tinacms-gitprovider-github'
 
@@ -144,14 +164,14 @@ const db = new TursoLevel({ client, namespace: 'tina' })
 // → uses table "tina_kv" instead of "kv"
 ```
 
-### Which `@libsql/client` import?
+### Which package to use?
 
-| Runtime | Import |
-|---------|--------|
-| Node.js, Bun, Deno | `@libsql/client` (supports `file:` and `:memory:` URLs) |
-| Cloudflare Workers, Vercel Edge, Netlify Edge | `@libsql/client/web` (HTTP only, no native deps) |
+| Runtime | Package | Import |
+|---------|---------|--------|
+| Node.js, Bun, Deno | `@libsql/client` | `@libsql/client` |
+| Cloudflare Workers, Vercel Edge, Netlify Edge | `@tursodatabase/serverless` | `@tursodatabase/serverless/compat` |
 
-The adapter works identically with both.
+Both expose the same `createClient()` API — the adapter works identically with either.
 
 ## API
 
