@@ -1,0 +1,43 @@
+{
+  "name": "@alexbruf/turso-level",
+  "version": "0.1.0",
+  "description": "An abstract-level database backed by Turso / libSQL",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.14.0",
+    "abstract-level": "^1.0.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vitest": "^3.2.4"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexbruf/turso-level.git"
+  },
+  "homepage": "https://github.com/alexbruf/turso-level#readme",
+  "bugs": {
+    "url": "https://github.com/alexbruf/turso-level/issues"
+  },
+  "keywords": ["abstract-level", "leveldb", "turso", "libsql", "sqlite", "serverless"]
+}
